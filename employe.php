@@ -8,16 +8,13 @@ require_role('EMPLOYE');
     <meta charset="UTF-8">
     <title>Réservation de voiture</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="script.js" defer></script>
 </head>
 <body class="bg-gradient-to-br from-indigo-400 via-blue-300 to-purple-200 min-h-screen flex flex-col items-center justify-center p-4">
-
 
     <!-- Header -->
     <header class="w-full max-w-3xl bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 flex justify-between items-center mb-5">
         <h1 class="text-2xl font-extrabold text-indigo-700">Réservation de voiture</h1>
         <!-- Optionnel: bouton de déconnexion -->
-        <a href="logout.php" class="inline-block px-4 py-2 bg-indigo-100 text-indigo-600 rounded-lg hover:bg-indigo-200 transition text-sm font-semibold">Déconnexion</a>
     </header>
 
     <!-- Contenu principal -->
@@ -57,7 +54,7 @@ require_role('EMPLOYE');
             <!-- Type de trajet -->
             <div class="relative">
                 <label class="block font-medium text-gray-700 mb-1">Type de trajet</label>
-                <select name="trajet" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
+                <select name="trajet" id="trajet" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                   <option value="aller_simple" selected>Aller simple</option>
                   <option value="aller_retour">Aller-retour</option>
                 </select>
@@ -111,19 +108,21 @@ require_role('EMPLOYE');
                 </span>
             </div>
 
-            <!-- Date retour -->
-            <div class="relative">
-                <label class="block font-medium text-gray-700 mb-1">Date retour (optionnel)</label>
-                <input type="date" name="date_retour" value="2025-08-16" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
+            <!-- Date retour (optionnel, affiché seulement si aller-retour) -->
+            <div class="relative" id="date_retour_group" style="display:none;">
+                <label class="block font-medium text-gray-700 mb-1">Date retour</label>
+                <input type="date" name="date_retour" value="2025-08-16" id="date_retour"
+                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 </span>
             </div>
 
-            <!-- Heure retour -->
-            <div class="relative">
-                <label class="block font-medium text-gray-700 mb-1">Heure retour (optionnel)</label>
-                <input type="text" name="heure_retour" pattern="^([01]\d|2[0-3]):([0-5]\d)$" placeholder="HH:MM" value="17:30" title="Entrez une heure au format 24h (ex: 17:30)" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
+            <!-- Heure retour (optionnel, affiché seulement si aller-retour) -->
+            <div class="relative" id="heure_retour_group" style="display:none;">
+                <label class="block font-medium text-gray-700 mb-1">Heure retour</label>
+                <input type="text" name="heure_retour" pattern="^([01]\d|2[0-3]):([0-5]\d)$" placeholder="HH:MM" value="17:30" id="heure_retour"
+                    title="Entrez une heure au format 24h (ex: 17:30)" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/></svg>
                 </span>
@@ -135,5 +134,24 @@ require_role('EMPLOYE');
             </button>
         </form>
     </main>
+
+    <script>
+    // Affiche/masque les champs retour selon le type de trajet
+    function updateRetourFields() {
+        const trajet = document.getElementById('trajet').value;
+        const dateRetourGroup = document.getElementById('date_retour_group');
+        const heureRetourGroup = document.getElementById('heure_retour_group');
+        if (trajet === 'aller_retour') {
+            dateRetourGroup.style.display = '';
+            heureRetourGroup.style.display = '';
+        } else {
+            dateRetourGroup.style.display = 'none';
+            heureRetourGroup.style.display = 'none';
+        }
+    }
+    document.getElementById('trajet').addEventListener('change', updateRetourFields);
+    // Initialise le champ à l'affichage
+    updateRetourFields();
+    </script>
 </body>
 </html>

@@ -15,8 +15,8 @@ $dateFin      = (!empty($_POST['date_retour']) && !empty($_POST['heure_retour'])
 
 
 $stmt = $conn->prepare("INSERT INTO reservations 
-(user_id, chauffeur, trajet, nb_personnes, depart, arrivee, date_depart, date_retour, statut)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'en_attente')");
+(user_id, chauffeur, trajet, nb_personnes, depart, arrivee, date_depart, date_retour, etat)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'new')");
 $stmt->bind_param("ississss", $userId, $chauffeur, $trajet, $nbPersonnes, $depart, $arrivee, $dateDebut, $dateFin);
 
 

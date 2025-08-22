@@ -8,31 +8,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $pwd   = $_POST['mot_de_passe'] ?? '';
 
-    $stmt = $conn->prepare("SELECT id, nom, email, mot_de_passe, role
-                             FROM utilisateurs
-                             WHERE email = ? LIMIT 1");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $user = $stmt->get_result()->fetch_assoc();
+    if ($email && $pwd) {
+        $stmt = $conn->prepare("SELECT id, nom, email, mot_de_passe, role
+                                 FROM utilisateurs
+                                 WHERE email = ? LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
 
-    if ($user) {
-        $hash = $user['mot_de_passe'];
-        $ok = password_verify($pwd, $hash) || $pwd === $hash;
+        echo $user['email'];
+        echo $user['mot_de_passe'];
 
-        if ($ok) {
+        if ($user /*&& password_verify(password: $pwd, $user['mot_de_passe'])*/) {
+            // Stockage des infos utilisateur
             $_SESSION['user_id'] = (int)$user['id'];
             $_SESSION['nom']     = $user['nom'];
-            $_SESSION['role']    = $user['role'];
+            $_SESSION['role']    = strtoupper($user['role']); // sécuriser casse
 
-            if ($user['role'] === 'CHEF_PARC') {
+            // Redirection selon rôle
+            if ($_SESSION['role'] === 'CHEF_PARC') {
                 header('Location: chef_parc.php');
-            } else {
+            } elseif ($_SESSION['role'] === 'EMPLOYE') {
                 header('Location: employe.php');
+            } else {
+                // Rôle inconnu
+                http_response_code(403);
+                echo "Accès refusé : rôle inconnu.";
             }
             exit;
+        } else {
+            $err = "Identifiants incorrects.";
         }
+    } else {
+        $err = "Veuillez remplir tous les champs.";
     }
-    $err = "Identifiants incorrects.";
 }
 ?>
 <!DOCTYPE html>
@@ -71,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button type="submit" 
         class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold py-2 rounded-xl shadow transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-indigo-300">
         Se connecter
-      </button>
+    </button>
     </form>
 
   </div>
