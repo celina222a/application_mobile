@@ -14,7 +14,6 @@ require_role('EMPLOYE');
     <!-- Header -->
     <header class="w-full max-w-3xl bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 flex justify-between items-center mb-5">
         <h1 class="text-2xl font-extrabold text-indigo-700">Réservation de voiture</h1>
-        <!-- Optionnel: bouton de déconnexion -->
     </header>
 
     <!-- Contenu principal -->
@@ -150,6 +149,7 @@ require_role('EMPLOYE');
         }
     }
     document.getElementById('trajet').addEventListener('change', updateRetourFields);
+
     // Initialise le champ à l'affichage
     updateRetourFields();
     </script>

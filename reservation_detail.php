@@ -1,9 +1,8 @@
-<?php
+ <?php
 require_once __DIR__ . '/auth.php';
 require_role('CHEF_PARC');
 require_once __DIR__ . '/config.php';
 
-session_start();
 $id = intval($_GET['id'] ?? 0);
 
 if ($id <= 0) {
@@ -18,23 +17,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $motif = trim($_POST['motif'] ?? '');
 
     if ($action === 'accepter') {
-        $stmt = $conn->prepare("UPDATE reservations SET etat='accepted', motif_annulation=NULL WHERE id=?");
+        $stmt = $conn->prepare("UPDATE reservations SET etat='accepted', motif=NULL WHERE id=?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $_SESSION['flash_success'] = "Réservation acceptée ✅";
-        header("Location: chef_parc.php");
-        exit;
+        $message = "Réservation acceptée ";
+        $message_type = 'ok';
     } elseif ($action === 'annuler') {
         if ($motif === '') {
             $message = "❌ Veuillez renseigner un motif pour l'annulation.";
             $message_type = 'err';
         } else {
-            $stmt = $conn->prepare("UPDATE reservations SET etat='cancelled', motif_annulation=? WHERE id=?");
+            $stmt = $conn->prepare("UPDATE reservations SET etat='cancelled', motif=? WHERE id=?");
             $stmt->bind_param("si", $motif, $id);
             $stmt->execute();
-            $_SESSION['flash_success'] = "❌ Réservation annulée avec motif.";
-            header("Location: chef_parc.php");
-            exit;
+            $message = "Réservation annulée avec motif.";
+            $message_type = 'cancelled';
         }
     }
 }
@@ -42,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Charger la réservation après modification
 $sql = "SELECT r.*, u.nom, u.email 
         FROM reservations r
-        LEFT JOIN utilisateurs u ON r.user_id = u.id
+        JOIN utilisateurs u ON r.user_id = u.id
         WHERE r.id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
@@ -243,54 +240,37 @@ function etat_class($etat) {
         <?php endif; ?>
 
         <ul>
-            <li><b>Employé :</b> <?= htmlspecialchars($reservation['nom'] ?? '—'); ?></li>
-            <li><b>Email :</b> <?= htmlspecialchars($reservation['email'] ?? '—'); ?></li>
+            <li><b>Employé :</b> <?= htmlspecialchars($reservation['nom']); ?></li>
+            <li><b>Email :</b> <?= htmlspecialchars($reservation['email']); ?></li>
             <li><b>Chauffeur :</b> <?= htmlspecialchars($reservation['chauffeur']); ?></li>
             <li><b>Trajet :</b> <?= htmlspecialchars($reservation['trajet']); ?></li>
             <li><b>Date départ :</b> <?= htmlspecialchars($reservation['date_depart']); ?></li>
             <li><b>État :</b> <span class="etat <?= etat_class($reservation['etat']); ?>"><?= etat_label($reservation['etat']); ?></span></li>
-            <?php if ($reservation['etat']==='cancelled' && !empty($reservation['motif_annulation'])): ?>
-                <li><b>Motif d'annulation :</b> <?= nl2br(htmlspecialchars($reservation['motif_annulation'])) ?></li>
+            <?php if ($reservation['etat']==='cancelled' && !empty($reservation['motif'])): ?>
+                <li><b>Motif d'annulation :</b> <?= nl2br(htmlspecialchars($reservation['motif'])) ?></li>
             <?php endif; ?>
         </ul>
 
-        <?php if ($reservation['etat'] === 'new' || $reservation['etat'] === 'accepted'): ?>
-            <form method="post" id="actionForm">
-                <div class="actions">
-                    <?php if ($reservation['etat'] === 'new'): ?>
-                        <button type="submit" name="action" value="accepter" class="btn-accept">Accepter</button>
-                    <?php endif; ?>
-                    <button type="button" id="btnCancel" class="btn-cancel">Annuler</button>
-                </div>
-                <div class="motif-wrap" id="motifWrap">
-                    <label for="motif" class="motif-label">Motif d'annulation :</label>
-                    <textarea name="motif" id="motif" placeholder="Écrivez le motif ici..."></textarea>
-                    <button type="submit" name="action" value="annuler" class="btn-cancel" style="margin-top:10px;">Confirmer l'annulation</button>
-                </div>
-            </form>
-        <?php endif; ?>
+    <?php if ($reservation['etat'] === 'new' || $reservation['etat'] === 'accepted'): ?>
+    <form method="post" id="actionForm" action="update_reservation.php">
+        <input type="hidden" name="id" value="<?= $reservation['id'] ?>">
+        <div class="actions">
+            <?php if ($reservation['etat'] === 'new'): ?>
+                <button type="submit" name="action" value="accepted" class="btn-accept">Accepter</button>
+            <?php endif; ?>
+            <button type="button" id="btnCancel" class="btn-cancel" onclick="test22()">Annuler</button>
+        </div>
+        <div class="motif-wrap" id="motifWrap">
+            <label for="motif" class="motif-label">Motif d'annulation :</label>
+            <textarea name="motif" id="motif" placeholder="Écrivez le motif ici..." oninput="toggleCancelButton(this)"></textarea>
+            <button id="confirmCancel" type="submit" name="action" value="cancelled" class="btn-cancel"  style="margin-top:10px;" disabled>Confirmer l'annulation</button>
+        </div>
+    </form>
+<?php endif; ?>
+
 
         <a href="chef_parc.php" class="return-btn">⬅ Retour</a>
     </div>
 </div>
-
-<script>
-const btnCancel = document.getElementById('btnCancel');
-const motifWrap = document.getElementById('motifWrap');
-const motifInput = document.getElementById('motif');
-if (btnCancel) {
-    btnCancel.addEventListener('click', () => {
-        motifWrap.classList.add('active');
-        motifInput.focus();
-    });
-}
-document.getElementById('actionForm')?.addEventListener('submit', function(e){
-    if (document.activeElement.value === "annuler" && motifInput.value.trim() === "") {
-        e.preventDefault();
-        alert("Veuillez renseigner un motif avant de confirmer l'annulation.");
-        motifInput.focus();
-    }
-});
-</script>
 </body>
 </html>

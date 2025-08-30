@@ -1,70 +1,94 @@
 <?php
-session_start();
 require_once __DIR__ . '/auth.php';
 require_role('CHEF_PARC');
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/mail_functions.php';
 
 $reservationId = intval($_POST['id'] ?? 0);
 $action = $_POST['action'] ?? '';
 $motif = trim($_POST['motif'] ?? '');
 
-if (!$reservationId || !in_array($action, ['accepted', 'cancelled'])) {
-    $_SESSION['flash_error'] = "Requête invalide !";
+if (!$reservationId || !in_array($action, ['accepted', 'cancelled'], true)) {
+    $_SESSION['flash_error'] = "Requête invalide.";
     header("Location: chef_parc.php");
     exit;
 }
 
-// Récupérer l’email du demandeur
-$sql = "SELECT r.id, u.email, u.nom 
+// Vérifier que la réservation existe et récupérer infos
+$sql = "SELECT r.id, r.trajet, r.depart, r.arrivee, r.date_depart, r.date_retour, r.nb_personnes, r.chauffeur, u.email 
         FROM reservations r
-        LEFT JOIN utilisateurs u ON r.user_id = u.id
-        WHERE r.id = ?";
+        JOIN utilisateurs u ON r.user_id = u.id
+        WHERE r.id = ? AND r.etat = 'new'";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $reservationId);
 $stmt->execute();
-$result = $stmt->get_result();
-$res = $result->fetch_assoc();
+$reservation = $stmt->get_result()->fetch_assoc();
 
-if (!$res) {
-    $_SESSION['flash_error'] = "❌ Réservation introuvable !";
+if (!$reservation) {
+    $_SESSION['flash_error'] = "Action impossible : réservation déjà traitée ou introuvable.";
     header("Location: chef_parc.php");
     exit;
 }
 
-// Mettre à jour le statut et le motif
+$employeEmail = $reservation['email'];
+$chefParcEmail = getConfigValue("CHEFPARC_EMAIL");
+
+// ======================
+// Traitement annulation
+// ======================
 if ($action === 'cancelled') {
     if (empty($motif)) {
         $_SESSION['flash_error'] = "Veuillez indiquer un motif pour l'annulation.";
         header("Location: reservation_detail.php?id={$reservationId}");
         exit;
     }
-    $update = $conn->prepare("UPDATE reservations SET etat = ?, motif_annulation = ? WHERE id = ?");
-    $update->bind_param("ssi", $action, $motif, $reservationId);
+
+    $update = $conn->prepare("UPDATE reservations SET etat = 'cancelled', motif= ? WHERE id = ?");
+    $update->bind_param("si", $motif, $reservationId);
     $update->execute();
-} else {
-    $update = $conn->prepare("UPDATE reservations SET etat = ?, motif_annulation = NULL WHERE id = ?");
-    $update->bind_param("si", $action, $reservationId);
-    $update->execute();
+
+    // Contenu email
+    $sujet = "❌ Votre réservation #{$reservationId} a été annulée";
+    $message = "
+        <h2>Réservation annulée</h2>
+        <p>Votre demande de réservation a été <b>annulée</b>.</p>
+        <p><b>Motif :</b> {$motif}</p>
+        <hr>
+        <p><b>Trajet :</b> {$reservation['depart']} → {$reservation['arrivee']}</p>
+        <p><b>Date départ :</b> {$reservation['date_depart']}</p>
+        ".(!empty($reservation['date_retour']) ? "<p><b>Date retour :</b> {$reservation['date_retour']}</p>" : "")."
+        <p><b>Nombre de personnes :</b> {$reservation['nb_personnes']}</p>
+        <p><b>Chauffeur :</b> {$reservation['chauffeur']}</p>
+    ";
+
+    envoyerMail($employeEmail, $chefParcEmail, $sujet, $message);
+    $_SESSION['flash_success'] = "❌ Réservation annulée et email envoyé.";
 }
 
-// Préparer email (ne marche pas toujours en local sans SMTP)
-$to = $res['email'];
-$subject = "Mise à jour de votre réservation";
-$message = "";
+// ======================
+// Traitement acceptation
+// ======================
+if ($action === 'accepted') {
+    $update = $conn->prepare("UPDATE reservations SET etat = 'accepted', motif= NULL WHERE id = ?");
+    $update->bind_param("i", $reservationId);
+    $update->execute();
 
-if ($action === "accepted") {
-    $message = "Bonjour " . $res['nom'] . ",\n\n";
-    $message .= "✅ Votre réservation a été acceptée.\n";
-} else {
-    $message = "Bonjour " . $res['nom'] . ",\n\n";
-    $message .= "❌ Votre réservation a été annulée.\n";
-    $message .= "Motif : " . $motif . "\n";
+    // Contenu email
+    $sujet = "✅ Votre réservation #{$reservationId} a été acceptée";
+    $message = "
+        <h2>Réservation acceptée</h2>
+        <p>Bonne nouvelle, votre demande de réservation a été <b>acceptée</b>.</p>
+        <hr>
+        <p><b>Trajet :</b> {$reservation['depart']} → {$reservation['arrivee']}</p>
+        <p><b>Date départ :</b> {$reservation['date_depart']}</p>
+        ".(!empty($reservation['date_retour']) ? "<p><b>Date retour :</b> {$reservation['date_retour']}</p>" : "")."
+        <p><b>Nombre de personnes :</b> {$reservation['nb_personnes']}</p>
+        <p><b>Chauffeur :</b> {$reservation['chauffeur']}</p>
+    ";
+
+    envoyerMail($employeEmail, $chefParcEmail, $sujet, $message);
+    $_SESSION['flash_success'] = "✅ Réservation acceptée et email envoyé.";
 }
 
-// Headers email
-$headers = "From: noreply@tonsite.com\r\n";
-@mail($to, $subject, $message, $headers);
-
-$_SESSION['flash_success'] = "Mise à jour effectuée.";
 header("Location: chef_parc.php");
 exit;

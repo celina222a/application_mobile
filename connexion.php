@@ -25,15 +25,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Stockage des infos utilisateur
             $_SESSION['user_id'] = (int)$user['id'];
             $_SESSION['nom']     = $user['nom'];
-            $_SESSION['role']    = strtoupper($user['role']); // sécuriser casse
+            $_SESSION['role']    = strtoupper($user['role']);
 
             // Redirection selon rôle
             if ($_SESSION['role'] === 'CHEF_PARC') {
                 header('Location: chef_parc.php');
             } elseif ($_SESSION['role'] === 'EMPLOYE') {
                 header('Location: employe.php');
+
             } else {
-                // Rôle inconnu
+
+             
                 http_response_code(403);
                 echo "Accès refusé : rôle inconnu.";
             }
@@ -67,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="email" name="email" placeholder="Email" required 
           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
         <!-- Icône email -->
+
         <span class="absolute left-3 top-2.5 text-indigo-400">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12l-4 4m0 0l-4-4m4 4V4"/></svg>
         </span>
@@ -74,6 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="relative">
         <input type="password" name="mot_de_passe" placeholder="Mot de passe" required 
           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+          
+
         <!-- Icône password -->
         <span class="absolute left-3 top-2.5 text-indigo-400">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 11V7a5 5 0 10-10 0v4a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2z"/></svg>

@@ -71,9 +71,9 @@ $result = $conn->query($sql);
             class="flex-1 w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-base focus:outline-none focus:border-indigo-400 shadow-sm"/>
         <select name="etat" class="border border-gray-300 rounded-lg px-3 py-2 text-base focus:outline-none focus:border-indigo-400 shadow-sm w-full sm:w-auto">
             <option value="">Tous les états</option>
-            <option value="new" <?= $filter_etat == 'new' ? 'selected' : '' ?>>En attente</option>
-            <option value="accepted" <?= $filter_etat == 'accepted' ? 'selected' : '' ?>>Acceptée</option>
-            <option value="cancelled" <?= $filter_etat == 'cancelled' ? 'selected' : '' ?>>Annulée</option>
+            <option value="new" <?= $filter_etat == 'new' ? 'selected' : '' ?>>new</option>
+            <option value="accepted" <?= $filter_etat == 'accepted' ? 'selected' : '' ?>>accepted</option>
+            <option value="cancelled" <?= $filter_etat == 'cancelled' ? 'selected' : '' ?>>cancelled</option>
         </select>
         <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 shadow transition w-full sm:w-auto">Filtrer</button>
     </form>
@@ -145,6 +145,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<script>
+    function test22() {
+        const btnCancel = document.getElementById('btnCancel');
+        if (btnCancel) {
+            const motifWrap = document.getElementById('motifWrap');
+            const motifInput = document.getElementById('motif');
+            motifWrap.classList.add('active');
+            motifInput.focus();
+        }
+    }toggleCancelButton
+
+    function toggleCancelButton(textarea) {
+        const confirmCancel = document.getElementById('confirmCancel');
+        confirmCancel.disabled = (textarea.value.trim() === "");
+    }
+
+</script>
+
 <style>
 @keyframes fadeIn { from {opacity:0;transform:scale(0.98);} to {opacity:1;transform:scale(1);} }
 .animate-fadeIn { animation: fadeIn .2s; }
