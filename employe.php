@@ -14,7 +14,11 @@ require_role('EMPLOYE');
     <!-- Header -->
     <header class="w-full max-w-3xl bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 flex justify-between items-center mb-5">
         <h1 class="text-2xl font-extrabold text-indigo-700">Réservation de voiture</h1>
-    </header>
+    <a href="logout.php" 
+       class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition">
+       Déconnexion
+    </a>
+</header>
 
     <!-- Contenu principal -->
     <main class="w-full max-w-3xl bg-white/90 rounded-2xl shadow-xl p-7">

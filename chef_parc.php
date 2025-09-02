@@ -53,6 +53,13 @@ $result = $conn->query($sql);
 <body class="bg-gradient-to-tr from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
 <div class="w-full max-w-md sm:max-w-2xl mx-auto my-2 p-2 sm:p-4 bg-white rounded-2xl shadow-lg">
     <h1 class="text-lg sm:text-2xl font-bold text-indigo-700 mb-1 sm:mb-2">Espace Chef de Parc</h1>
+    <div class="flex justify-end mb-4">
+    <a href="logout.php" 
+       class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition">
+       Déconnexion
+    </a>
+</div>
+
     <h2 class="text-base sm:text-lg font-semibold text-indigo-500 mb-3 sm:mb-6">Liste des réservations</h2>
     <?php if (isset($_SESSION['flash_success'])): ?>
         <div class="mb-3 px-4 py-2 bg-green-100 text-green-700 rounded shadow text-center text-sm">
@@ -116,7 +123,7 @@ $result = $conn->query($sql);
 </div>
 <!-- Modale pour AJAX détail -->
 <div class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 hidden" id="modal-bg">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-[98vw] mx-1 p-3 sm:p-6 relative animate-fadeIn">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-[98vw] mx-1 p-3 sm:p-6 relative animate-fadeIn max-h-[80vh] overflow-y-auto">
         <button class="absolute top-2 right-3 text-2xl text-gray-500 hover:text-indigo-500" onclick="closeModal()">&times;</button>
         <div id="modal-content"></div>
     </div>

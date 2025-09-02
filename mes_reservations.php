@@ -5,21 +5,28 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/mail_functions.php'; // on charge la fonction d’envoi de mail
 
 // --- Récupération des données du formulaire ---
+
 $userId       = $_SESSION['user_id'];
 $chauffeur    = $_POST['chauffeur'] ?? '';
 $trajet       = $_POST['trajet'] ?? '';
 $nbPersonnes  = (int)($_POST['nb_personnes'] ?? 0);
 $depart       = $_POST['depart'] ?? '';
-$arrivee      = $_POST['arrivee'] ?? '';
-$dateDebut    = $_POST['date_depart'] . ' ' . $_POST['heure_depart'];
-$dateFin      = (!empty($_POST['date_retour']) && !empty($_POST['heure_retour']))
-                  ? $_POST['date_retour'] . ' ' . $_POST['heure_retour'] : null;
+$arrivee      = $_POST['arrivee'] ?? '';  // <-- point-virgule ajouté
+$dateDepart   = $_POST['date_depart'] ?? null;
+$heureDepart  = $_POST['heure_depart'] ?? null;
+$dateRetour   = $_POST['date_retour'] ?? null;
+$heureRetour  = $_POST['heure_retour'] ?? null;
 
-// --- Insertion en base ---
 $stmt = $conn->prepare("INSERT INTO reservations 
-(user_id, chauffeur, trajet, nb_personnes, depart, arrivee, date_depart, date_retour, etat)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'new')");
-$stmt->bind_param("ississss", $userId, $chauffeur, $trajet, $nbPersonnes, $depart, $arrivee, $dateDebut, $dateFin);
+    (user_id, chauffeur, trajet, nb_personnes, depart, arrivee, date_depart, heure_depart, date_retour, heure_retour, etat, date_reservation) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', NOW())");
+
+$stmt->bind_param(
+    "ississssss", 
+    $userId, $chauffeur, $trajet, $nbPersonnes, $depart, $arrivee, 
+    $dateDepart, $heureDepart, $dateRetour, $heureRetour
+);
+
 
 if ($stmt->execute()) {
     // ✅ Réservation enregistrée

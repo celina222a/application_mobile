@@ -238,18 +238,56 @@ function etat_class($etat) {
         <?php if ($message): ?>
             <div class="msg <?= $message_type ?>"><?= htmlspecialchars($message) ?></div>
         <?php endif; ?>
+<ul>
+    <li><b>Employé :</b> <?= htmlspecialchars($reservation['nom']); ?></li>
+    <li><b>Email :</b> <?= htmlspecialchars($reservation['email']); ?></li>
+    <li><b>Chauffeur :</b> <?= htmlspecialchars($reservation['chauffeur']); ?></li>
+    <li><b>Trajet :</b> <?= ($reservation['trajet'] === 'aller_simple') ? 'Aller simple' : 'Aller-retour'; ?></li>
+    <li><b>Nombre de personnes :</b> <?= (int)$reservation['nb_personnes']; ?></li>
 
-        <ul>
-            <li><b>Employé :</b> <?= htmlspecialchars($reservation['nom']); ?></li>
-            <li><b>Email :</b> <?= htmlspecialchars($reservation['email']); ?></li>
-            <li><b>Chauffeur :</b> <?= htmlspecialchars($reservation['chauffeur']); ?></li>
-            <li><b>Trajet :</b> <?= htmlspecialchars($reservation['trajet']); ?></li>
-            <li><b>Date départ :</b> <?= htmlspecialchars($reservation['date_depart']); ?></li>
-            <li><b>État :</b> <span class="etat <?= etat_class($reservation['etat']); ?>"><?= etat_label($reservation['etat']); ?></span></li>
-            <?php if ($reservation['etat']==='cancelled' && !empty($reservation['motif'])): ?>
-                <li><b>Motif d'annulation :</b> <?= nl2br(htmlspecialchars($reservation['motif'])) ?></li>
-            <?php endif; ?>
-        </ul>
+    <li><b>Départ :</b> <?= htmlspecialchars($reservation['depart']); ?></li>
+    <li><b>Arrivée :</b> <?= htmlspecialchars($reservation['arrivee']); ?></li>
+
+    <!-- Date et heure de réservation -->
+    <li><b>Date réservation :</b> 
+        <?= !empty($reservation['date_reservation']) ? date("d/m/Y", strtotime($reservation['date_reservation'])) : '-' ?>
+    </li>
+    <li><b>Heure réservation :</b> 
+        <?= !empty($reservation['date_reservation']) ? date("H:i", strtotime($reservation['date_reservation'])) : '-' ?>
+    </li>
+
+   <li><b>Date départ :</b> 
+    <?= !empty($reservation['date_depart']) ? date("d/m/Y", strtotime($reservation['date_depart'])) : '-' ?>
+</li>
+<li><b>Heure départ :</b> 
+    <?= !empty($reservation['heure_depart']) ? date("H:i", strtotime($reservation['heure_depart'])) : '-' ?>
+</li>
+
+
+ <?php if ($reservation['trajet'] === 'aller_retour' && !empty($reservation['date_retour'])): ?>
+    <li><b>Date retour :</b> 
+        <?= date("d/m/Y", strtotime($reservation['date_retour'])); ?>
+    </li>
+    <li><b>Heure retour :</b> 
+        <?= !empty($reservation['heure_retour']) ? date("H:i", strtotime($reservation['heure_retour'])) : '-' ?>
+    </li>
+<?php endif; ?>
+
+
+    <!-- État -->
+    <li><b>État :</b> 
+        <span class="etat <?= etat_class($reservation['etat']); ?>">
+            <?= etat_label($reservation['etat']); ?>
+        </span>
+    </li>
+
+    <!-- Motif si annulé -->
+    <?php if ($reservation['etat'] === 'cancelled' && !empty($reservation['motif'])): ?>
+        <li><b>Motif d'annulation :</b> <?= nl2br(htmlspecialchars($reservation['motif'])) ?></li>
+    <?php endif; ?>
+</ul>
+
+
 
     <?php if ($reservation['etat'] === 'new' || $reservation['etat'] === 'accepted'): ?>
     <form method="post" id="actionForm" action="update_reservation.php">
