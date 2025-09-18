@@ -22,7 +22,7 @@ CREATE TABLE reservations (
     date_retour DATE NULL,
     heure_retour TIME NULL,
     etat ENUM('new','accepted','cancelled') NOT NULL DEFAULT 'new',
-    motif_annulation TEXT NULL,
+    motif TEXT NULL,
     CONSTRAINT fk_reservation_user FOREIGN KEY (user_id) REFERENCES utilisateurs(id)
 );
 

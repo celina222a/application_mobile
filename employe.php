@@ -69,7 +69,7 @@ require_role('EMPLOYE');
             <!-- Nombre de personnes -->
             <div class="relative">
                 <label class="block font-medium text-gray-700 mb-1">Nombre de personnes</label>
-                <input type="number" name="nb_personnes" value="3" min="1" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
+                <input type="number" name="nb_personnes"  min="1" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 11V7a5 5 0 10-10 0v4a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2z"/></svg>
                 </span>
@@ -78,7 +78,7 @@ require_role('EMPLOYE');
             <!-- Lieu de départ -->
             <div class="relative">
                 <label class="block font-medium text-gray-700 mb-1">Lieu de départ</label>
-                <input type="text" name="depart" value="la tour" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
+                <input type="text" name="depart"  required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414A6 6 0 1112.414 13.414l4.243 4.243z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 19l-1.414-1.414"/></svg>
                 </span>
@@ -87,7 +87,7 @@ require_role('EMPLOYE');
             <!-- Lieu d'arrivée -->
             <div class="relative">
                 <label class="block font-medium text-gray-700 mb-1">Lieu d'arrivée</label>
-                <input type="text" name="arrivee" value="MFG" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
+                <input type="text" name="arrivee" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414A6 6 0 1112.414 13.414l4.243 4.243z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 19l-1.414-1.414"/></svg>
                 </span>
@@ -96,7 +96,7 @@ require_role('EMPLOYE');
             <!-- Date départ -->
             <div class="relative">
                 <label class="block font-medium text-gray-700 mb-1">Date départ</label>
-                <input type="date" name="date_depart" value="2025-08-15" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
+                <input type="date" name="date_depart"  required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 </span>
@@ -105,7 +105,7 @@ require_role('EMPLOYE');
             <!-- Heure départ -->
             <div class="relative">
                 <label class="block font-medium text-gray-700 mb-1">Heure départ</label>
-                <input type="text" name="heure_depart" pattern="^([01]\d|2[0-3]):([0-5]\d)$" placeholder="HH:MM" value="09:00" required title="Entrez une heure au format 24h (ex: 17:30)" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
+                <input type="text" name="heure_depart" pattern="^([01]\d|2[0-3]):([0-5]\d)$" placeholder="HH:MM"  required title="Entrez une heure au format 24h (ex: 17:30)" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/></svg>
                 </span>
@@ -114,7 +114,7 @@ require_role('EMPLOYE');
             <!-- Date retour (optionnel, affiché seulement si aller-retour) -->
             <div class="relative" id="date_retour_group" style="display:none;">
                 <label class="block font-medium text-gray-700 mb-1">Date retour</label>
-                <input type="date" name="date_retour" value="2025-08-16" id="date_retour"
+                <input type="date" name="date_retour"  id="date_retour"
                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -124,7 +124,7 @@ require_role('EMPLOYE');
             <!-- Heure retour (optionnel, affiché seulement si aller-retour) -->
             <div class="relative" id="heure_retour_group" style="display:none;">
                 <label class="block font-medium text-gray-700 mb-1">Heure retour</label>
-                <input type="text" name="heure_retour" pattern="^([01]\d|2[0-3]):([0-5]\d)$" placeholder="HH:MM" value="17:30" id="heure_retour"
+                <input type="text" name="heure_retour" pattern="^([01]\d|2[0-3]):([0-5]\d)$" placeholder="HH:MM"  id="heure_retour"
                     title="Entrez une heure au format 24h (ex: 17:30)" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 transition">
                 <span class="absolute left-3 top-9 text-indigo-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/></svg>
